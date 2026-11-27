@@ -1,0 +1,21 @@
+# Local / staging helper. Build the image from this repo, mount conf + data.
+#
+#   cp rportd.example.conf rportd.conf   # edit key_seed, auth, ports, etc.
+#   docker compose up -d --build
+
+services:
+  rportd:
+    build: .
+    image: openrport:latest
+    ports:
+      - "${RPORT_AGENT_PORT:-8080}:8080"
+      - "${RPORT_API_PORT:-3000}:3000"
+    volumes:
+      - ./rportd.conf:/etc/rportd.conf:ro
+      - rport-data:/var/lib/rport
+      - rport-logs:/var/log/rport
+    restart: unless-stopped
+
+volumes:
+  rport-data:
+  rport-logs:
